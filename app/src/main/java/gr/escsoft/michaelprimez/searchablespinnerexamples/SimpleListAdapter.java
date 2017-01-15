@@ -102,7 +102,7 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable {
                 return filterResults;
             }
             final ArrayList<String> filterStrings = new ArrayList<>();
-            for (String text : mStrings) {
+            for (String text : mBackupStrings) {
                 if (text.toLowerCase().contains(constraint)) {
                     filterStrings.add(text);
                 }

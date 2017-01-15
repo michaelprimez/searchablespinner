@@ -161,7 +161,13 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         getScreenSize();
-        mPopupWindow.setWidth(View.MeasureSpec.getSize(widthMeasureSpec));
+        int width = View.MeasureSpec.getSize(widthMeasureSpec);
+        if (mShowBorders) {     // + 4 because of card layout_margin in the view_searchable_spinner.xml
+            width -= UITools.dpToPx(mContext, mBordersSize + 4);
+        } else {
+            width -= UITools.dpToPx(mContext, 4);
+        }
+        mPopupWindow.setWidth(width);
         mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -258,7 +264,9 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            ((Filterable) mSpinnerListView.getAdapter()).getFilter().filter(s);
+            Filterable filterable =  (Filterable) mSpinnerListView.getAdapter();
+            if (filterable != null)
+                filterable.getFilter().filter(s);
         }
 
         @Override
@@ -284,7 +292,6 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
     private void setupList() {
         ViewGroup.MarginLayoutParams spinnerListViewLayoutParams = (ViewGroup.MarginLayoutParams) mSpinnerListView.getLayoutParams();
-        ViewGroup.MarginLayoutParams emptyTextViewLayoutParams = (ViewGroup.MarginLayoutParams) mEmptyTextView.getLayoutParams();
         ViewGroup.LayoutParams spinnerListContainerLayoutParams = mSpinnerListContainer.getLayoutParams();
         LinearLayout.LayoutParams listLayoutParams = (LinearLayout.LayoutParams) mSpinnerListView.getLayoutParams();
 
@@ -396,7 +403,6 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             public void onAnimationEnd(Animator animation) {
                 mContainerCardView.setVisibility(View.VISIBLE);
                 mViewState = ViewState.ShowingEditLayout;
-                //((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
             }
 
             @Override

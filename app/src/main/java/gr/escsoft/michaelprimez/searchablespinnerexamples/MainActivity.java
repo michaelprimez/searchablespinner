@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SearchableSpinner mSearchableSpinner;
     private SearchableSpinner mSearchableSpinner1;
+    private SearchableSpinner mSearchableSpinner2;
     private SimpleListAdapter mSimpleListAdapter;
     private final ArrayList<String> mStrings = new ArrayList<>();
 
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
         mSearchableSpinner1 = (SearchableSpinner) findViewById(R.id.SearchableSpinner1);
         mSearchableSpinner1.setAdapter(mSimpleListAdapter);
         mSearchableSpinner1.setOnItemSelectedListener(mOnItemSelectedListener);
+
+        mSearchableSpinner2 = (SearchableSpinner) findViewById(R.id.SearchableSpinner2);
+        mSearchableSpinner2.setAdapter(mSimpleListAdapter);
+        mSearchableSpinner2.setOnItemSelectedListener(mOnItemSelectedListener);
     }
 
     private OnItemSelectedListener mOnItemSelectedListener = new OnItemSelectedListener() {
