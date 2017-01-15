@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/LnrLt_SearchListContainer"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:gravity="center_horizontal|center_vertical"
+              android:layout_gravity="center_horizontal|center_vertical"
+              android:visibility="gone">
+    <ListView
+        android:id="@+id/LstVw_SpinnerListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:dividerHeight="0dp"
+        android:divider="@null"
+        android:background="@android:color/white"
+        android:layout_gravity="top"/>
+    <TextView
+        android:id="@+id/TxtVw_EmptyText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/empty_list"/>
+</LinearLayout>

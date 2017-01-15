@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SearchableSpinner</string>
+    <string name="done_search">Done Search</string>
+    <string name="start_search">Start search</string>
+    <string name="search">Search...</string>
+    <string name="empty_list">No Items Found</string>
+</resources>

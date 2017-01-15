@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SearchableSpinner">
+        <!-- View attributes -->
+        <attr name="RevealViewBackgroundColor" format="color" />
+        <attr name="StartSearchTintColor" format="color" />
+        <attr name="SearchViewBackgroundColor" format="color" />
+        <attr name="SearchViewTextColor" format="color" />
+        <attr name="DoneSearchTintColor" format="color" />
+        <attr name="AnimDuration" format="integer"/>
+        <attr name="ShowBorders" format="boolean"/>
+        <attr name="BordersSize" format="dimension"/>
+        <attr name="BoarderColor" format="color"/>
+        <attr name="SpinnerExpandHeight" format="dimension"/>
+        <attr name="KeepLastSearch" format="boolean"/>
+        <attr name="RevealEmptyText" format="string"/>
+        <attr name="SearchHintText" format="string"/>
+        <attr name="NoItemsFoundText" format="string"/>
+    </declare-styleable>
+</resources>
