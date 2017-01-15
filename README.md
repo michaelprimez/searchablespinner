@@ -1,7 +1,7 @@
 <snippet>
 [ ![Download](https://api.bintray.com/packages/michaelprimez/maven/SearchableSpinner/images/download.svg?version=1.0.0) ](https://bintray.com/michaelprimez/maven/SearchableSpinner/1.0.0/link)
 #Searchable Spinner
-![Demo SearchableSpinner](https://github.com/michaelprimez/searchablespinner/searchablespinner.gif) 
+![Demo SearchableSpinner](https://github.com/michaelprimez/searchablespinner/blob/master/searchablespinner.gif) 
 ## Usage
 
 Add the dependency to your build.gradle.
