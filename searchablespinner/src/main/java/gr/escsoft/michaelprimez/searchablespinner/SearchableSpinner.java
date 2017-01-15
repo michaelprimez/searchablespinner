@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -188,13 +189,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         mPopupWindow.setContentView(mSpinnerListContainer);
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setFocusable(false);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mPopupWindow.setElevation(DefaultElevation);
-            //mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.spinner_drawable));
-        } else {
-            //mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.drop_down_shadow));
-        }
+        mPopupWindow.setElevation(DefaultElevation);
+        mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.spinner_drawable));
 
         mSpinnerListView.setOnItemClickListener(mOnItemSelectedListener);
         if (!TextUtils.isEmpty(mSearchHintText)) {
@@ -361,11 +357,11 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private void revealEditView() {
         mViewState = ViewState.ShowingAnimation;
 
-        int cx = mRevealContainerCardView.getLeft();
-        int cxr = mRevealContainerCardView.getRight();
-        int cy = (mRevealContainerCardView.getTop() + mRevealContainerCardView.getHeight())/2;
-        int reverse_startradius = Math.max(mRevealContainerCardView.getWidth(), mRevealContainerCardView.getHeight());
-        int reverse_endradius = 0;
+        final int cx = mRevealContainerCardView.getLeft();
+        final int cxr = mRevealContainerCardView.getRight();
+        final int cy = (mRevealContainerCardView.getTop() + mRevealContainerCardView.getHeight())/2;
+        final int reverse_startradius = Math.max(mRevealContainerCardView.getWidth(), mRevealContainerCardView.getHeight());
+        final int reverse_endradius = 0;
 
         mPopupWindow.showAsDropDown(this, cx, 0);
 
@@ -417,48 +413,54 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             }
         });
 
-//        final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mSpinnerListContainer, cxr, cy, reverse_endradius, reverse_startradius);
-//        animator.addListener(new Animator.AnimatorListener() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                mSpinnerListContainer.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation) {
-//
-//            }
-//        });
-
         mSpinnerListContainer.setVisibility(View.VISIBLE);
         mContainerCardView.setVisibility(View.VISIBLE);
         animator.setDuration(mAnimDuration);
         revealAnimator.setDuration(mAnimDuration);
-//        spinnerListContainerAnimator.setDuration(mAnimDuration);
+
 
         animator.start();
         revealAnimator.start();
-//        spinnerListContainerAnimator.start();
+        mPopupWindow.getContentView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mPopupWindow.getContentView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView(), cxr, cy, reverse_endradius, reverse_startradius);
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mSpinnerListContainer.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                spinnerListContainerAnimator.setDuration(mAnimDuration);
+                spinnerListContainerAnimator.start();
+            }
+        });
 
     }
 
     private void hideEditView() {
         mViewState = ViewState.ShowingAnimation;
-        int cx = mContainerCardView.getLeft();
-        int cxr = mContainerCardView.getRight();
-        int cy = (mContainerCardView.getTop() + mContainerCardView.getHeight())/2;
-        int reverse_startradius = Math.max(mContainerCardView.getWidth(), mContainerCardView.getHeight());
-        int reverse_endradius = 0;
+        final int cx = mContainerCardView.getLeft();
+        final int cxr = mContainerCardView.getRight();
+        final int cy = (mContainerCardView.getTop() + mContainerCardView.getHeight())/2;
+        final int reverse_startradius = Math.max(mContainerCardView.getWidth(), mContainerCardView.getHeight());
+        final int reverse_endradius = 0;
 
         final Animator revealAnimator = ViewAnimationUtils.createCircularReveal(mRevealContainerCardView, cx, cy, reverse_endradius, reverse_startradius);
         revealAnimator.addListener(new Animator.AnimatorListener() {
@@ -509,30 +511,6 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             }
         });
 
-//        final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mSpinnerListContainer, cxr, cy, reverse_startradius, reverse_endradius);
-//        animator.addListener(new Animator.AnimatorListener() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                mSpinnerListContainer.setVisibility(View.GONE);
-//                mPopupWindow.dismiss();
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation) {
-//
-//            }
-//        });
-
         mRevealContainerCardView.setVisibility(View.VISIBLE);
         animator.setDuration(mAnimDuration);
         animator.start();
@@ -540,7 +518,37 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         revealAnimator.setDuration(mAnimDuration);
         revealAnimator.start();
 
-//        spinnerListContainerAnimator.setDuration(mAnimDuration);
-//        spinnerListContainerAnimator.start();
+
+        mPopupWindow.getContentView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mPopupWindow.getContentView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView(), cxr, cy, reverse_startradius, reverse_endradius);
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mSpinnerListContainer.setVisibility(View.GONE);
+                        mPopupWindow.dismiss();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                spinnerListContainerAnimator.setDuration(mAnimDuration);
+                spinnerListContainerAnimator.start();
+            }
+        });
     }
 }
