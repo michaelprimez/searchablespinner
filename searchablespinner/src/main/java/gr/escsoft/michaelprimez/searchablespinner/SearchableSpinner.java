@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -190,23 +192,29 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
         mPopupWindow = new PopupWindow(mContext);
         mPopupWindow.setContentView(mSpinnerListContainer);
+        mPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        mPopupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         mPopupWindow.setOutsideTouchable(false);
         mPopupWindow.setFocusable(false);
         mPopupWindow.setElevation(DefaultElevation);
         mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.spinner_drawable));
 
         mSpinnerListView.setOnItemClickListener(mOnItemSelectedListener);
-        if (!TextUtils.isEmpty(mSearchHintText)) {
-            mSearchEditText.setHint(mSearchHintText);
-        }
-        if (!TextUtils.isEmpty(mNoItemsFoundText)) {
-            mEmptyTextView.setText(mNoItemsFoundText);
-        }
-        if (mCurrSelectedView == null && !TextUtils.isEmpty(mRevealEmptyText)) {
-            TextView textView = new TextView(mContext);
-            textView.setText(mRevealEmptyText);
-            mCurrSelectedView = new SelectedView(textView, -1, 0);
-            mRevealItem.addView(textView);
+        if (mCurrSelectedView == null) {
+            if (!TextUtils.isEmpty(mSearchHintText)) {
+                mSearchEditText.setHint(mSearchHintText);
+            }
+            if (!TextUtils.isEmpty(mNoItemsFoundText)) {
+                mEmptyTextView.setText(mNoItemsFoundText);
+            }
+            if (mCurrSelectedView == null && !TextUtils.isEmpty(mRevealEmptyText)) {
+                TextView textView = new TextView(mContext);
+                textView.setText(mRevealEmptyText);
+                mCurrSelectedView = new SelectedView(textView, -1, 0);
+                mRevealItem.addView(textView);
+            }
+        } else {
+            mSpinnerListView.performItemClick(mCurrSelectedView.getView(), mCurrSelectedView.getPosition(), mCurrSelectedView.getId());
         }
         clearAnimation();
         clearFocus();
@@ -247,14 +255,6 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             }
         }
     };
-
-    @Override
-    public void onWindowFocusChanged(boolean hasWindowFocus) {
-        super.onWindowFocusChanged(hasWindowFocus);
-        if (mViewState == ViewState.ShowingEditLayout) {
-            hideEditView();
-        }
-    }
 
     private TextWatcher mTextWatcher = new TextWatcher() {
         @Override
@@ -323,6 +323,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        hideEdit();
         getScreenSize();
     }
 
@@ -367,7 +368,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         final int reverse_startradius = Math.max(mRevealContainerCardView.getWidth(), mRevealContainerCardView.getHeight());
         final int reverse_endradius = 0;
 
-        mPopupWindow.showAsDropDown(this, cx, 0);
+        if (!mPopupWindow.isShowing())
+            mPopupWindow.showAsDropDown(this, cx, 0);
 
         final Animator revealAnimator = ViewAnimationUtils.createCircularReveal(mRevealContainerCardView, cx, cy, reverse_startradius, reverse_endradius);
         revealAnimator.addListener(new Animator.AnimatorListener() {
@@ -522,31 +524,156 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         revealAnimator.setDuration(mAnimDuration);
         revealAnimator.start();
 
+        if (mPopupWindow.isShowing()) {
+            final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView(), cxr, cy, reverse_startradius, reverse_endradius);
+            spinnerListContainerAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-        final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView(), cxr, cy, reverse_startradius, reverse_endradius);
-        spinnerListContainerAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+                }
 
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mSpinnerListContainer.setVisibility(View.GONE);
+                    mPopupWindow.dismiss();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            spinnerListContainerAnimator.setDuration(mAnimDuration);
+            spinnerListContainerAnimator.start();
+        }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.mViewState = ViewState.ShowingRevealedLayout;
+        ss.mAnimDuration = mAnimDuration;
+        ss.mBordersSize = mBordersSize;
+        ss.mExpandSize = mExpandSize;
+        ss.mBoarderColor = mBoarderColor;
+        ss.mRevealViewBackgroundColor = mRevealViewBackgroundColor;
+        ss.mStartEditTintColor = mStartEditTintColor;
+        ss.mEditViewBackgroundColor = mEditViewBackgroundColor;
+        ss.mEditViewTextColor = mEditViewTextColor;
+        ss.mDoneEditTintColor = mDoneEditTintColor;
+        ss.mShowBorders = mShowBorders;
+        ss.mKeepLastSearch = mKeepLastSearch;
+        ss.mRevealEmptyText = mRevealEmptyText;
+        ss.mSearchHintText = mSearchHintText;
+        ss.mNoItemsFoundText = mNoItemsFoundText;
+        ss.mSelectedViewPosition = mCurrSelectedView != null ? mCurrSelectedView.getPosition() : -1;
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        mViewState = ss.mViewState;
+        mAnimDuration = ss.mAnimDuration;
+        mBordersSize = ss.mBordersSize;
+        mExpandSize = ss.mExpandSize;
+        mBoarderColor = ss.mBoarderColor;
+        mRevealViewBackgroundColor = ss.mRevealViewBackgroundColor;
+        mStartEditTintColor = ss.mStartEditTintColor;
+        mEditViewBackgroundColor = ss.mEditViewBackgroundColor;
+        mEditViewTextColor = ss.mEditViewTextColor;
+        mDoneEditTintColor = ss.mDoneEditTintColor;
+        mShowBorders = ss.mShowBorders;
+        mKeepLastSearch = ss.mKeepLastSearch;
+        mRevealEmptyText = ss.mRevealEmptyText;
+        mSearchHintText = ss.mSearchHintText;
+        mNoItemsFoundText = ss.mNoItemsFoundText;
+        int mSelectedViewPosition = ss.mSelectedViewPosition;
+
+        if (mSelectedViewPosition >= 0) {
+            View v = mSpinnerListView.getAdapter().getView(mSelectedViewPosition, null, null);
+            mSpinnerListView.performItemClick(v, mSelectedViewPosition, v.getId());
+        }
+    }
+
+    static class SavedState extends BaseSavedState {
+        ViewState mViewState;
+        int mAnimDuration;
+        @Px int mBordersSize;
+        @Px int mExpandSize;
+        @ColorInt int mBoarderColor;
+        @ColorInt int mRevealViewBackgroundColor;
+        @ColorInt int mStartEditTintColor;
+        @ColorInt int mEditViewBackgroundColor;
+        @ColorInt int mEditViewTextColor;
+        @ColorInt int mDoneEditTintColor;
+        boolean mShowBorders;
+        boolean mKeepLastSearch;
+        String mRevealEmptyText;
+        String mSearchHintText;
+        String mNoItemsFoundText;
+        int mSelectedViewPosition;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            mViewState = ViewState.values()[in.readInt()];
+            mAnimDuration = in.readInt();
+            mBordersSize = in.readInt();
+            mExpandSize = in.readInt();
+            mBoarderColor = in.readInt();
+            mRevealViewBackgroundColor = in.readInt();
+            mStartEditTintColor = in.readInt();
+            mEditViewBackgroundColor = in.readInt();
+            mEditViewTextColor = in.readInt();
+            mDoneEditTintColor = in.readInt();
+            mShowBorders = in.readInt() > 0 ? true : false;
+            mKeepLastSearch = in.readInt() > 0 ? true : false;
+            mRevealEmptyText = in.readString();
+            mSearchHintText = in.readString();
+            mNoItemsFoundText = in.readString();
+            mSelectedViewPosition = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(mViewState.ordinal());
+            out.writeInt(mAnimDuration);
+            out.writeInt(mBordersSize);
+            out.writeInt(mExpandSize);
+            out.writeInt(mBoarderColor);
+            out.writeInt(mRevealViewBackgroundColor);
+            out.writeInt(mStartEditTintColor);
+            out.writeInt(mEditViewBackgroundColor);
+            out.writeInt(mEditViewTextColor);
+            out.writeInt(mDoneEditTintColor);
+            out.writeInt(mShowBorders ? 1 : 0);
+            out.writeInt(mKeepLastSearch ? 1 : 0);
+            out.writeString(mRevealEmptyText);
+            out.writeString(mSearchHintText);
+            out.writeString(mNoItemsFoundText);
+            out.writeInt(mSelectedViewPosition);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
             }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mSpinnerListContainer.setVisibility(View.GONE);
-                mPopupWindow.dismiss();
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
             }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        spinnerListContainerAnimator.setDuration(mAnimDuration);
-        spinnerListContainerAnimator.start();
+        };
     }
 }

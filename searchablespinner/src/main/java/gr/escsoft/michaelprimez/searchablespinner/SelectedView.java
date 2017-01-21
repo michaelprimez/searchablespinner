@@ -1,5 +1,7 @@
 package gr.escsoft.michaelprimez.searchablespinner;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.view.View;
 
@@ -7,7 +9,7 @@ import android.view.View;
  * Created by michael on 1/14/17.
  */
 
-public class SelectedView {
+public class SelectedView implements Parcelable {
     private View mView;
     private int mPosition;
     private @IdRes long mId;
@@ -61,5 +63,33 @@ public class SelectedView {
         result = 31 * result + mPosition;
         result = 31 * result + (int) (mId ^ (mId >>> 32));
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SelectedView> CREATOR = new Creator<SelectedView>() {
+        @Override
+        public SelectedView createFromParcel(Parcel in) {
+            return new SelectedView(in);
+        }
+
+        @Override
+        public SelectedView[] newArray(int size) {
+            return new SelectedView[size];
+        }
+    };
+
+    protected SelectedView(Parcel in) {
+        mPosition = in.readInt();
+        mId = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mPosition);
+        dest.writeLong(mId);
     }
 }
