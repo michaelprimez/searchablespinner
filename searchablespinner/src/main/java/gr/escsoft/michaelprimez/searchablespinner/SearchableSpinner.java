@@ -27,6 +27,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -185,6 +186,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private void init() {
         setupColors();
         setupList();
+        mSearchEditText.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         mStartSearchImageView.setOnClickListener(this);
         mDoneSearchImageView.setOnClickListener(this);
         mSearchEditText.addTextChangedListener(mTextWatcher);
