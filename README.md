@@ -1,12 +1,12 @@
 <snippet>
-[ ![Download](https://api.bintray.com/packages/michaelprimez/maven/SearchableSpinner/images/download.svg?version=1.0.0) ](https://bintray.com/michaelprimez/maven/SearchableSpinner/1.0.0/link)
+[ ![Download](https://api.bintray.com/packages/michaelprimez/maven/SearchableSpinner/images/download.svg) ](https://bintray.com/michaelprimez/maven/SearchableSpinner/_latestVersion)
 #Searchable Spinner
 ![Demo SearchableSpinner](https://github.com/michaelprimez/searchablespinner/blob/master/searchablespinner.gif) 
 ## Usage
 
 Add the dependency to your build.gradle.
 ```xml
-compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.0'
+compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.1'
 ```
 
 Usage on layout
