@@ -26,7 +26,6 @@ dependencies {
     })
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:design:25.1.0'
     compile project(path: ':searchablespinner')
     compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.1'

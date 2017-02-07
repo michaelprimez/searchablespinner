@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'gr.escsoft.michaelprimez.searchablespinner'
     PUBLISH_ARTIFACT_ID = 'SearchableSpinner'
-    PUBLISH_VERSION = '1.0.1'
+    PUBLISH_VERSION = '1.0.2'
 }
 
 android {
@@ -34,7 +34,6 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.facebook.stetho:stetho:1.4.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:design:25.1.0'
     compile 'com.android.support:cardview-v7:25.1.0'
     compile 'com.joanzapata.iconify:android-iconify-material:2.2.2' // (v2.0.0)
