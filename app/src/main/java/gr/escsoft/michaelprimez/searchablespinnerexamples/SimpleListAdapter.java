@@ -17,12 +17,14 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import java.util.ArrayList;
 
 import gr.escsoft.michaelprimez.revealedittext.tools.UITools;
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 
 /**
  * Created by michael on 1/8/17.
  */
 
-public class SimpleListAdapter extends BaseAdapter implements Filterable {
+public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinnerSelectedView {
 
     private Context mContext;
     private ArrayList<String> mBackupStrings;
@@ -37,26 +39,53 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public int getCount() {
-        return mStrings == null ? 0 : mStrings.size();
+        return mStrings == null ? 0 : mStrings.size() + 1;
     }
 
     @Override
     public Object getItem(int position) {
-        return mStrings == null ? null : mStrings.get(position);
+        if (mStrings == null && position > 0)
+            return mStrings.get(position);
+        else
+            return null;
     }
 
     @Override
     public long getItemId(int position) {
-        return mStrings == null ? 0L : mStrings.get(position).hashCode();
+        if (mStrings == null && position > 0)
+            return mStrings.get(position).hashCode();
+        else
+            return -1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView == null ? View.inflate(mContext, R.layout.view_list_item, null) : convertView;
+        View view = null;
+        if (position == 0) {
+            view = getNoSelectionView();
+        } else {
+            view = View.inflate(mContext, R.layout.view_list_item, null);
+            ImageView letters = (ImageView) view.findViewById(R.id.ImgVw_Letters);
+            TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
+            letters.setImageDrawable(getTextDrawable(mStrings.get(position)));
+            dispalyName.setText(mStrings.get(position));
+        }
+        return view;
+    }
+
+    @Override
+    public View getSelectedView(int position) {
+        View view = View.inflate(mContext, R.layout.view_list_item, null);
         ImageView letters = (ImageView) view.findViewById(R.id.ImgVw_Letters);
         TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
         letters.setImageDrawable(getTextDrawable(mStrings.get(position)));
         dispalyName.setText(mStrings.get(position));
+        return view;
+    }
+
+    @Override
+    public View getNoSelectionView() {
+        View view = View.inflate(mContext, R.layout.view_list_no_selection_item, null);
         return view;
     }
 
@@ -121,5 +150,9 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable {
     private class ItemView {
         public ImageView mImageView;
         public TextView mTextView;
+    }
+
+    public enum ItemViewType {
+        ITEM, NO_SELECTION_ITEM;
     }
 }

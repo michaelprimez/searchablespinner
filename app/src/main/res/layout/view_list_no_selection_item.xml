@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingTop="4dp"
+              android:paddingBottom="4dp"
+              android:paddingRight="4dp"
+              android:paddingLeft="8dp"
+              android:orientation="horizontal"
+              app:layout_collapseMode="parallax"
+              app:layout_collapseParallaxMultiplier="0.5">
+
+    <TextView
+        android:id="@+id/TxtVw_NoSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_gravity="center_vertical"
+        android:text="@string/no_selection"/>
+</LinearLayout>

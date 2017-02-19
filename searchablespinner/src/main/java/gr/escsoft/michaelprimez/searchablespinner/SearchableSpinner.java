@@ -29,6 +29,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Filterable;
@@ -43,6 +44,7 @@ import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialModule;
 import com.joanzapata.iconify.widget.IconTextView;
 
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import gr.escsoft.michaelprimez.searchablespinner.tools.EditCursorColor;
 import gr.escsoft.michaelprimez.searchablespinner.tools.UITools;
@@ -246,6 +248,74 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             hideEdit();
         }
     };
+
+    public Object getSelectedItem() {
+        if (mCurrSelectedView != null) {
+            int position = mCurrSelectedView.getPosition();
+            Adapter adapter = mSpinnerListView.getAdapter();
+            if (adapter != null && adapter.getCount() > 0 && position >= 0) {
+                return adapter.getItem(position);
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public void setSelectedItem(int position) {
+        Adapter adapter = mSpinnerListView.getAdapter();
+        if ((adapter instanceof ISpinnerSelectedView) && position > 0) {
+            View selectedView = ((ISpinnerSelectedView) adapter).getSelectedView(position);
+            mCurrSelectedView = new SelectedView(selectedView, position, selectedView.getId());
+            mSpinnerListView.setSelection(position);
+        } else {
+            TextView textView = new TextView(mContext);
+            textView.setText(mRevealEmptyText);
+            mCurrSelectedView = new SelectedView(textView, -1, 0);
+            mRevealItem.addView(textView);
+        }
+        if (mCurrSelectedView == null) {
+            if (mOnItemSelected != null)
+                mOnItemSelected.onNothingSelected();
+        } else if (mCurrSelectedView != null) {
+            mRevealItem.removeAllViews();
+            mSpinnerListView.removeViewInLayout(mCurrSelectedView.getView());
+            mRevealItem.addView(mCurrSelectedView.getView());
+            ((BaseAdapter) mSpinnerListView.getAdapter()).notifyDataSetChanged();
+            if (mOnItemSelected != null)
+                mOnItemSelected.onItemSelected(mCurrSelectedView.getView(), mCurrSelectedView.getPosition(), mCurrSelectedView.getId());
+        }
+        hideEdit();
+    }
+
+    public int getItemPosition(Object item) {
+        if (item == null)
+            return -1;
+        Adapter adapter = mSpinnerListView.getAdapter();
+        if (adapter != null) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                Object adpItem = adapter.getItem(i);
+                if (adpItem != null && adpItem.equals(item)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public void setSelectedItem(Object item) {
+        int itemPosition = getItemPosition(item);
+        if (itemPosition >= 0) {
+            setSelectedItem(itemPosition);
+        }
+    }
+
+    public int getSelectedPosition() {
+        if (mCurrSelectedView != null) {
+            return mCurrSelectedView.getPosition();
+        }
+        return -1;
+    }
 
     private OnClickListener mOnRevelViewClickListener = new OnClickListener() {
         @Override

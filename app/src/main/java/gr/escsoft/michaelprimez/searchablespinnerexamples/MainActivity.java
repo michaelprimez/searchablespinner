@@ -125,7 +125,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_reset) {
+            mSearchableSpinner.setSelectedItem(0);
+            mSearchableSpinner1.setSelectedItem(0);
+            mSearchableSpinner2.setSelectedItem(0);
             return true;
         }
 
