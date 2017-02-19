@@ -7,7 +7,7 @@
 
 Add the dependency to your build.gradle.
 ```xml
-compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.2'
+compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.3'
 ```
 
 Usage on layout
@@ -35,8 +35,11 @@ Usage on layout
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+5. Submit a pull request :D ## History
+
 ## History
+Version 1.0.3
+    * added [get, set] selected item
 
 # LICENSE 
 
