@@ -68,7 +68,6 @@
                             android:layout_marginLeft="4dp"
                             android:gravity="center_vertical"
                             android:layout_alignParentEnd="true"
-                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:contentDescription="@string/start_search"
                             android:padding="12dp"

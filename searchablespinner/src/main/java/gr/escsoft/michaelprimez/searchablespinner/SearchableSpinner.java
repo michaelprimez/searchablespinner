@@ -130,8 +130,9 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     }
 
     private void getAttributeSet(@Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
+        TypedArray attributes;
         if (attrs != null) {
-            TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SearchableSpinner, defStyleAttr, defStyleRes);
+            attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SearchableSpinner, defStyleAttr, defStyleRes);
             mRevealViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_RevealViewBackgroundColor, Color.WHITE);
             mStartEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_StartSearchTintColor, Color.GRAY);
             mEditViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewBackgroundColor, Color.WHITE);
@@ -146,6 +147,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             mRevealEmptyText = attributes.getString(R.styleable.SearchableSpinner_RevealEmptyText);
             mSearchHintText = attributes.getString(R.styleable.SearchableSpinner_SearchHintText);
             mNoItemsFoundText = attributes.getString(R.styleable.SearchableSpinner_NoItemsFoundText);
+
+            attributes.recycle();
         }
     }
 
@@ -173,16 +176,23 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             width -= UITools.dpToPx(mContext, 4);
         }
         mPopupWindow.setWidth(width);
+        if (mExpandSize <= 0) {
+            mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        }
         mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (mExpandSize <= 0) {
-            mPopupWindow.setHeight(mScreenHeightPixels - (t + b));
-        }
+
         super.onLayout(changed, l, t, r, b);
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        requestLayout();
+        super.onScrollChanged(l, t, oldl, oldt);
     }
 
     private void init() {
@@ -365,7 +375,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private void setupList() {
         ViewGroup.MarginLayoutParams spinnerListViewLayoutParams = (ViewGroup.MarginLayoutParams) mSpinnerListView.getLayoutParams();
         ViewGroup.LayoutParams spinnerListContainerLayoutParams = mSpinnerListContainer.getLayoutParams();
-        LinearLayout.LayoutParams listLayoutParams = (LinearLayout.LayoutParams) mSpinnerListView.getLayoutParams();
+        ViewGroup.LayoutParams listLayoutParams = mSpinnerListView.getLayoutParams();
 
         spinnerListContainerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
