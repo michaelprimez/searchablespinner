@@ -208,7 +208,12 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         mPopupWindow.setContentView(mSpinnerListContainer);
         mPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mPopupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-        mPopupWindow.setOutsideTouchable(false);
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                hideEdit();
+            }
+        });
         mPopupWindow.setFocusable(false);
         mPopupWindow.setElevation(DefaultElevation);
         mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.spinner_drawable));
