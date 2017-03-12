@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -130,25 +131,26 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     }
 
     private void getAttributeSet(@Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
-        TypedArray attributes;
         if (attrs != null) {
-            attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SearchableSpinner, defStyleAttr, defStyleRes);
-            mRevealViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_RevealViewBackgroundColor, Color.WHITE);
-            mStartEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_StartSearchTintColor, Color.GRAY);
-            mEditViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewBackgroundColor, Color.WHITE);
-            mEditViewTextColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewTextColor, Color.BLACK);
-            mDoneEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_DoneSearchTintColor, Color.GRAY);
-            mBordersSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_BordersSize, UITools.dpToPx(mContext, 4));
-            mExpandSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_SpinnerExpandHeight, 0);
-            mShowBorders = attributes.getBoolean(R.styleable.SearchableSpinner_ShowBorders, false);
-            mBoarderColor = attributes.getColor(R.styleable.SearchableSpinner_BoarderColor, Color.GRAY);
-            mAnimDuration = attributes.getColor(R.styleable.SearchableSpinner_AnimDuration, DefaultAnimationDuration);
-            mKeepLastSearch = attributes.getBoolean(R.styleable.SearchableSpinner_KeepLastSearch, false);
-            mRevealEmptyText = attributes.getString(R.styleable.SearchableSpinner_RevealEmptyText);
-            mSearchHintText = attributes.getString(R.styleable.SearchableSpinner_SearchHintText);
-            mNoItemsFoundText = attributes.getString(R.styleable.SearchableSpinner_NoItemsFoundText);
-
-            attributes.recycle();
+            try {
+                TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SearchableSpinner, defStyleAttr, defStyleRes);
+                mRevealViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_RevealViewBackgroundColor, Color.WHITE);
+                mStartEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_StartSearchTintColor, Color.GRAY);
+                mEditViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewBackgroundColor, Color.WHITE);
+                mEditViewTextColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewTextColor, Color.BLACK);
+                mDoneEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_DoneSearchTintColor, Color.GRAY);
+                mBordersSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_BordersSize, UITools.dpToPx(mContext, 4));
+                mExpandSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_SpinnerExpandHeight, 0);
+                mShowBorders = attributes.getBoolean(R.styleable.SearchableSpinner_ShowBorders, false);
+                mBoarderColor = attributes.getColor(R.styleable.SearchableSpinner_BoarderColor, Color.GRAY);
+                mAnimDuration = attributes.getColor(R.styleable.SearchableSpinner_AnimDuration, DefaultAnimationDuration);
+                mKeepLastSearch = attributes.getBoolean(R.styleable.SearchableSpinner_KeepLastSearch, false);
+                mRevealEmptyText = attributes.getString(R.styleable.SearchableSpinner_RevealEmptyText);
+                mSearchHintText = attributes.getString(R.styleable.SearchableSpinner_SearchHintText);
+                mNoItemsFoundText = attributes.getString(R.styleable.SearchableSpinner_NoItemsFoundText);
+            } catch (UnsupportedOperationException e) {
+                Log.e("SearchableSpinner", "getAttributeSet --> " + e.getLocalizedMessage());
+            }
         }
     }
 
@@ -179,7 +181,6 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         if (mExpandSize <= 0) {
             mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         }
-        mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -203,11 +204,11 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         mDoneSearchImageView.setOnClickListener(this);
         mSearchEditText.addTextChangedListener(mTextWatcher);
 
-
         mPopupWindow = new PopupWindow(mContext);
         mPopupWindow.setContentView(mSpinnerListContainer);
         mPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mPopupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -243,11 +244,25 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (mCurrSelectedView == null) {
-                mCurrSelectedView = new SelectedView(view, position, id);
+                Adapter adapter = parent.getAdapter();
+                if (adapter instanceof ISpinnerSelectedView) {
+                    View selectedView = ((ISpinnerSelectedView) adapter).getSelectedView(position);
+                    mCurrSelectedView = new SelectedView(selectedView, position, selectedView.getId());
+                } else {
+                    mCurrSelectedView = new SelectedView(view, position, id);
+                }
+                mSpinnerListView.setSelection(position);
             } else {
-                mCurrSelectedView.setView(view);
-                mCurrSelectedView.setPosition(position);
-                mCurrSelectedView.setId(id);
+                Adapter adapter = parent.getAdapter();
+                if (adapter instanceof ISpinnerSelectedView) {
+                    View selectedView = ((ISpinnerSelectedView) adapter).getSelectedView(position);
+                    mCurrSelectedView = new SelectedView(selectedView, position, selectedView.getId());
+                } else {
+                    mCurrSelectedView.setView(view);
+                    mCurrSelectedView.setPosition(position);
+                    mCurrSelectedView.setId(id);
+                }
+                mSpinnerListView.setSelection(position);
             }
             if (mCurrSelectedView == null) {
                 if (mOnItemSelected != null)
@@ -279,7 +294,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
     public void setSelectedItem(int position) {
         Adapter adapter = mSpinnerListView.getAdapter();
-        if ((adapter instanceof ISpinnerSelectedView) && position > 0) {
+        if (adapter instanceof ISpinnerSelectedView) {
             View selectedView = ((ISpinnerSelectedView) adapter).getSelectedView(position);
             mCurrSelectedView = new SelectedView(selectedView, position, selectedView.getId());
             mSpinnerListView.setSelection(position);
@@ -380,7 +395,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private void setupList() {
         ViewGroup.MarginLayoutParams spinnerListViewLayoutParams = (ViewGroup.MarginLayoutParams) mSpinnerListView.getLayoutParams();
         ViewGroup.LayoutParams spinnerListContainerLayoutParams = mSpinnerListContainer.getLayoutParams();
-        ViewGroup.LayoutParams listLayoutParams = mSpinnerListView.getLayoutParams();
+        LinearLayout.LayoutParams listLayoutParams = (LinearLayout.LayoutParams) mSpinnerListView.getLayoutParams();
 
         spinnerListContainerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
