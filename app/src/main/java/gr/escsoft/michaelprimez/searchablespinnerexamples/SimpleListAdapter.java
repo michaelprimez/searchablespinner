@@ -75,11 +75,16 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
 
     @Override
     public View getSelectedView(int position) {
-        View view = View.inflate(mContext, R.layout.view_list_item, null);
-        ImageView letters = (ImageView) view.findViewById(R.id.ImgVw_Letters);
-        TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
-        letters.setImageDrawable(getTextDrawable(mStrings.get(position)));
-        dispalyName.setText(mStrings.get(position));
+        View view = null;
+        if (position == 0) {
+            view = getNoSelectionView();
+        } else {
+            view = View.inflate(mContext, R.layout.view_list_item, null);
+            ImageView letters = (ImageView) view.findViewById(R.id.ImgVw_Letters);
+            TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
+            letters.setImageDrawable(getTextDrawable(mStrings.get(position-1)));
+            dispalyName.setText(mStrings.get(position-1));
+        }
         return view;
     }
 
