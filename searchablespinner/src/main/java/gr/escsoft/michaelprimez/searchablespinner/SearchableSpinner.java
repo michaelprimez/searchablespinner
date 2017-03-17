@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
@@ -23,6 +24,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -652,6 +654,15 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             spinnerListContainerAnimator.setDuration(mAnimDuration);
             spinnerListContainerAnimator.start();
         }
+    }
+
+    public boolean isInsideSearchEditText(MotionEvent event) {
+        Rect editTextRect = new Rect();
+        mSearchEditText.getHitRect(editTextRect);
+        if (!editTextRect.contains((int)event.getX(), (int)event.getY())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

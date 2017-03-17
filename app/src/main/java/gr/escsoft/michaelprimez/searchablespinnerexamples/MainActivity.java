@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
         mSearchableSpinner2 = (SearchableSpinner) findViewById(R.id.SearchableSpinner2);
         mSearchableSpinner2.setAdapter(mSimpleListAdapter);
         mSearchableSpinner2.setOnItemSelectedListener(mOnItemSelectedListener);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!mSearchableSpinner1.isInsideSearchEditText(event)) {
+            mSearchableSpinner1.hideEdit();
+        }
+        return super.onTouchEvent(event);
     }
 
     private OnItemSelectedListener mOnItemSelectedListener = new OnItemSelectedListener() {
@@ -110,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         mStrings.add("Margherita Pazos");
         mStrings.add("Yuk Fitts");
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
