@@ -44,6 +44,7 @@ Usage on layout
 ## History
 Version 1.0.3
 * added [get, set] selected item
+
 Version 1.0.6
 * added Touch outside to dismiss
     
