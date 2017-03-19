@@ -4,7 +4,7 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SearchableSpinner-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5120)
 
-Searchable Spinner
+# Searchable Spinner
 
 ![Demo SearchableSpinner](https://github.com/michaelprimez/searchablespinner/blob/master/searchablespinner.gif) 
 
@@ -43,12 +43,14 @@ Usage on layout
 5. Submit a pull request :D ## History
 
 ## History
-Version 1.0.3
+#### Version 1.0.3
 * added [get, set] selected item
 
-Version 1.0.6
+#### Version 1.0.6
 * added Touch outside to dismiss
     
+#### Version 1.0.7
+* added a status listener
 
 # LICENSE 
 
