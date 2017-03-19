@@ -1,6 +1,7 @@
 <snippet>
 
 [![Download](https://api.bintray.com/packages/michaelprimez/maven/SearchableSpinner/images/download.svg) ](https://bintray.com/michaelprimez/maven/SearchableSpinner/_latestVersion)
+
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SearchableSpinner-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5120)
 
 Searchable Spinner
@@ -11,7 +12,7 @@ Searchable Spinner
 
 Add the dependency to your build.gradle.
 ```xml
-compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.6'
+compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.7'
 ```
 
 Usage on layout
