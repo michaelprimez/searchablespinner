@@ -1,8 +1,6 @@
 package gr.escsoft.michaelprimez.searchablespinnerexamples;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
@@ -12,9 +10,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,20 +35,62 @@ public class MainActivity extends AppCompatActivity {
         mSearchableSpinner = (SearchableSpinner) findViewById(R.id.SearchableSpinner);
         mSearchableSpinner.setAdapter(mSimpleListAdapter);
         mSearchableSpinner.setOnItemSelectedListener(mOnItemSelectedListener);
+        mSearchableSpinner.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                mSearchableSpinner1.hideEdit();
+                mSearchableSpinner2.hideEdit();
+            }
+
+            @Override
+            public void spinnerIsClosing() {
+
+            }
+        });
 
         mSearchableSpinner1 = (SearchableSpinner) findViewById(R.id.SearchableSpinner1);
         mSearchableSpinner1.setAdapter(mSimpleListAdapter);
         mSearchableSpinner1.setOnItemSelectedListener(mOnItemSelectedListener);
+        mSearchableSpinner1.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                mSearchableSpinner.hideEdit();
+                mSearchableSpinner2.hideEdit();
+            }
+
+            @Override
+            public void spinnerIsClosing() {
+
+            }
+        });
 
         mSearchableSpinner2 = (SearchableSpinner) findViewById(R.id.SearchableSpinner2);
         mSearchableSpinner2.setAdapter(mSimpleListAdapter);
         mSearchableSpinner2.setOnItemSelectedListener(mOnItemSelectedListener);
+        mSearchableSpinner2.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                mSearchableSpinner.hideEdit();
+                mSearchableSpinner1.hideEdit();
+            }
+
+            @Override
+            public void spinnerIsClosing() {
+
+            }
+        });
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!mSearchableSpinner.isInsideSearchEditText(event)) {
+            mSearchableSpinner.hideEdit();
+        }
         if (!mSearchableSpinner1.isInsideSearchEditText(event)) {
             mSearchableSpinner1.hideEdit();
+        }
+        if (!mSearchableSpinner2.isInsideSearchEditText(event)) {
+            mSearchableSpinner2.hideEdit();
         }
         return super.onTouchEvent(event);
     }

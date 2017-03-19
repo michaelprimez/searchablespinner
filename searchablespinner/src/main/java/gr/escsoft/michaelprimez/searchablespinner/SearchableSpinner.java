@@ -48,6 +48,7 @@ import com.joanzapata.iconify.fonts.MaterialModule;
 import com.joanzapata.iconify.widget.IconTextView;
 
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import gr.escsoft.michaelprimez.searchablespinner.tools.EditCursorColor;
 import gr.escsoft.michaelprimez.searchablespinner.tools.UITools;
@@ -61,7 +62,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private static final int DefaultElevation = 16;
     private static final int DefaultAnimationDuration = 400;
     private ViewState mViewState = ViewState.ShowingRevealedLayout;
-
+    private IStatusListener mStatusListener;
     private CardView mRevealContainerCardView;
     private LinearLayout mRevealItem;
     private IconTextView mStartSearchImageView;
@@ -464,7 +465,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
     private void revealEditView() {
         mViewState = ViewState.ShowingAnimation;
-
+        if (mStatusListener != null)
+            mStatusListener.spinnerIsOpening();
         final int cx = mRevealContainerCardView.getLeft();
         final int cxr = mRevealContainerCardView.getRight();
         final int cy = (mRevealContainerCardView.getTop() + mRevealContainerCardView.getHeight())/2;
@@ -566,6 +568,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
     private void hideEditView() {
         mViewState = ViewState.ShowingAnimation;
+        if (mStatusListener != null)
+            mStatusListener.spinnerIsClosing();
         final int cx = mContainerCardView.getLeft();
         final int cxr = mContainerCardView.getRight();
         final int cy = (mContainerCardView.getTop() + mContainerCardView.getHeight())/2;
@@ -663,6 +667,10 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             return false;
         }
         return true;
+    }
+
+    public void setStatusListener(IStatusListener statusListener) {
+        mStatusListener = statusListener;
     }
 
     @Override
