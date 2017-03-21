@@ -16,5 +16,7 @@
         <attr name="RevealEmptyText" format="string"/>
         <attr name="SearchHintText" format="string"/>
         <attr name="NoItemsFoundText" format="string"/>
+        <attr name="ItemsDivider" format="reference"/>
+        <attr name="DividerHeight" format="dimension"/>
     </declare-styleable>
 </resources>

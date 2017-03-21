@@ -61,7 +61,10 @@
         app:DoneSearchTintColor="@android:color/holo_purple"
         app:RevealViewBackgroundColor="@android:color/holo_purple"
         app:SearchViewBackgroundColor="@android:color/secondary_text_dark"
-        app:ShowBorders="false"
+        app:ShowBorders="true"
         app:RevealEmptyText="Touch to select"
-        app:SpinnerExpandHeight="300dp"/>
+        app:SpinnerExpandHeight="300dp"
+        app:ItemsDivider="@color/gray_400"
+        app:DividerHeight="0.5dp"/>
+
 </LinearLayout>

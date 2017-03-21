@@ -11,7 +11,7 @@ Searchable Spinner
 
 Add the dependency to your build.gradle.
 ```xml
-compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.6'
+compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.7'
 ```
 
 Usage on layout

@@ -6,10 +6,13 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Dimension;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
@@ -87,10 +90,12 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private @ColorInt int mEditViewBackgroundColor;
     private @ColorInt int mEditViewTextColor;
     private @ColorInt int mDoneEditTintColor;
+    private @ColorInt int mBoarderColor;
+    private Drawable mListItemDivider;
     private @Px int mBordersSize;
     private @Px int mExpandSize;
+    private @Px int mListDividerSize;
     private boolean mShowBorders;
-    private @ColorInt int mBoarderColor;
     private boolean mKeepLastSearch;
     private String mRevealEmptyText;
     private String mSearchHintText;
@@ -129,6 +134,10 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
         mSpinnerListContainer = (LinearLayout) factory.inflate(R.layout.view_list, this, false);
         mSpinnerListView = (ListView) mSpinnerListContainer.findViewById(R.id.LstVw_SpinnerListView);
+        if (mListItemDivider != null) {
+            mSpinnerListView.setDivider(mListItemDivider);
+            mSpinnerListView.setDividerHeight(mListDividerSize);
+        }
         mEmptyTextView = (TextView) mSpinnerListContainer.findViewById(R.id.TxtVw_EmptyText);
         mSpinnerListView.setEmptyView(mEmptyTextView);
     }
@@ -151,6 +160,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
                 mRevealEmptyText = attributes.getString(R.styleable.SearchableSpinner_RevealEmptyText);
                 mSearchHintText = attributes.getString(R.styleable.SearchableSpinner_SearchHintText);
                 mNoItemsFoundText = attributes.getString(R.styleable.SearchableSpinner_NoItemsFoundText);
+                mListItemDivider = attributes.getDrawable(R.styleable.SearchableSpinner_ItemsDivider);
+                mListDividerSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_DividerHeight, 0);
             } catch (UnsupportedOperationException e) {
                 Log.e("SearchableSpinner", "getAttributeSet --> " + e.getLocalizedMessage());
             }
