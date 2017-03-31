@@ -44,8 +44,8 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
 
     @Override
     public Object getItem(int position) {
-        if (mStrings == null && position > 0)
-            return mStrings.get(position);
+        if (mStrings != null && position > 0)
+            return mStrings.get(position - 1);
         else
             return null;
     }
