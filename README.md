@@ -1,6 +1,6 @@
 <snippet>
 
-[![Download](https://api.bintray.com/packages/michaelprimez/maven/SearchableSpinner/images/download.svg) ](https://bintray.com/michaelprimez/maven/SearchableSpinner/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/michaelprimez/maven/SearchableSpinner/images/download.svg) ](https://bintray.com/michaelprimez/maven/SearchableSpinner/_latestVersion)
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-SearchableSpinner-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/5120)
 
@@ -12,7 +12,7 @@
 
 Add the dependency to your build.gradle.
 ```xml
-compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.7'
+compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.8'
 ```
 
 Usage on layout
@@ -51,6 +51,9 @@ Usage on layout
     
 #### Version 1.0.7
 * added a status listener
+
+#### Version 1.0.8
+* added divider and divider height
 
 # LICENSE 
 
