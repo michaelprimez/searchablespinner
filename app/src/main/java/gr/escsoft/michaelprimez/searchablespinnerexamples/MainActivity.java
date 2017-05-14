@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private SearchableSpinner mSearchableSpinner;
     private SearchableSpinner mSearchableSpinner1;
     private SearchableSpinner mSearchableSpinner2;
+    private SearchableSpinner mSearchableSpinner3;
     private SimpleListAdapter mSimpleListAdapter;
     private final ArrayList<String> mStrings = new ArrayList<>();
 
@@ -72,6 +73,22 @@ public class MainActivity extends AppCompatActivity {
             public void spinnerIsOpening() {
                 mSearchableSpinner.hideEdit();
                 mSearchableSpinner1.hideEdit();
+            }
+
+            @Override
+            public void spinnerIsClosing() {
+
+            }
+        });
+
+        mSearchableSpinner3 = (SearchableSpinner) findViewById(R.id.SearchableSpinner3);
+        mSearchableSpinner3.setAdapter(mSimpleListAdapter);
+        mSearchableSpinner3.setOnItemSelectedListener(mOnItemSelectedListener);
+        mSearchableSpinner3.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                mSearchableSpinner.hideEdit();
+                mSearchableSpinner3.hideEdit();
             }
 
             @Override

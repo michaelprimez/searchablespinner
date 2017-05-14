@@ -151,7 +151,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
                 mEditViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewBackgroundColor, Color.WHITE);
                 mEditViewTextColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewTextColor, Color.BLACK);
                 mDoneEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_DoneSearchTintColor, Color.GRAY);
-                mBordersSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_BordersSize, UITools.dpToPx(mContext, 4));
+                mBordersSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_BordersSize, 4);
                 mExpandSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_SpinnerExpandHeight, 0);
                 mShowBorders = attributes.getBoolean(R.styleable.SearchableSpinner_ShowBorders, false);
                 mBoarderColor = attributes.getColor(R.styleable.SearchableSpinner_BoarderColor, Color.GRAY);
@@ -187,9 +187,9 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         getScreenSize();
         int width = View.MeasureSpec.getSize(widthMeasureSpec);
         if (mShowBorders) {     // + 4 because of card layout_margin in the view_searchable_spinner.xml
-            width -= UITools.dpToPx(mContext, mBordersSize + 4);
+            width -= UITools.dpToPx(mContext, (mBordersSize + 4));
         } else {
-            width -= UITools.dpToPx(mContext, 4);
+            width -= UITools.dpToPx(mContext, 8);
         }
         mPopupWindow.setWidth(width);
         if (mExpandSize <= 0) {
@@ -418,7 +418,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             listLayoutParams.height = mExpandSize;
         }
         mSpinnerListContainer.setBackgroundColor(mBoarderColor);
-        if (mShowBorders) {
+        if (mShowBorders && mBordersSize > 0) {
             spinnerListViewLayoutParams.setMargins(mBordersSize, mBordersSize, mBordersSize, mBordersSize);
         } else {
             spinnerListViewLayoutParams.setMargins(0, 0, 0, 0);

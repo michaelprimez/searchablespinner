@@ -67,4 +67,25 @@
         app:ItemsDivider="@color/gray_400"
         app:DividerHeight="0.5dp"/>
 
+    <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
+        android:id="@+id/SearchableSpinner3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center_horizontal"
+        app:StartSearchTintColor="@android:color/white"
+        app:DoneSearchTintColor="@android:color/holo_purple"
+        app:RevealViewBackgroundColor="@android:color/holo_purple"
+        app:SearchViewBackgroundColor="@android:color/secondary_text_dark"
+        app:ShowBorders="false"
+        app:BordersSize="4dp"
+        app:RevealEmptyText="Touch to select"
+        app:SpinnerExpandHeight="300dp"
+        app:ItemsDivider="@color/gray_400"
+        app:DividerHeight="0.5dp"/>
+
 </LinearLayout>
