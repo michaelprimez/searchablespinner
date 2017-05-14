@@ -12,7 +12,7 @@
 
 Add the dependency to your build.gradle.
 ```xml
-compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.8'
+compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.9'
 ```
 
 Usage on layout
