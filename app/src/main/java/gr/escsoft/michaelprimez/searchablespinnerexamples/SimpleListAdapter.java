@@ -16,9 +16,9 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.ArrayList;
 
-import gr.escsoft.michaelprimez.revealedittext.tools.UITools;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
-import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+
+import static gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner.dpToPx;
 
 /**
  * Created by michael on 1/8/17.
@@ -100,8 +100,8 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             int color2 = ColorGenerator.MATERIAL.getColor(displayName);
             drawable = TextDrawable.builder()
                     .beginConfig()
-                    .width(UITools.dpToPx(mContext, 32))
-                    .height(UITools.dpToPx(mContext, 32))
+                    .width(dpToPx(mContext, 32))
+                    .height(dpToPx(mContext, 32))
                     .textColor(Color.WHITE)
                     .toUpperCase()
                     .endConfig()
@@ -110,8 +110,8 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
         } else {
             drawable = TextDrawable.builder()
                     .beginConfig()
-                    .width(UITools.dpToPx(mContext, 32))
-                    .height(UITools.dpToPx(mContext, 32))
+                    .width(dpToPx(mContext, 32))
+                    .height(dpToPx(mContext, 32))
                     .endConfig()
                     .round()
                     .build("?", Color.GRAY);
