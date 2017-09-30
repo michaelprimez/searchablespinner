@@ -28,7 +28,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
     compile project(path: ':searchablespinner')
-    compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     testCompile 'junit:junit:4.12'
 }
