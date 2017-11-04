@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "gr.escsoft.michaelprimez.searchablespinnerexamples"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -25,10 +25,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.facebook.stetho:stetho:1.4.1'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile project(path: ':searchablespinner')
-    compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.1'
+    compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.2'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     testCompile 'junit:junit:4.12'
 }
