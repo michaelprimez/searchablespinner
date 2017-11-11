@@ -1,18 +1,18 @@
 package gr.escsoft.michaelprimez.searchablespinner;
 
 import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
-import android.support.annotation.Dimension;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
@@ -29,7 +29,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -55,6 +54,9 @@ import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import gr.escsoft.michaelprimez.searchablespinner.tools.EditCursorColor;
 import gr.escsoft.michaelprimez.searchablespinner.tools.UITools;
+import gr.escsoft.michaelprimez.searchablespinner.tools.Utils;
+import io.codetail.animation.ViewAnimationUtils;
+import io.codetail.widget.RevealLinearLayout;
 
 /**
  * Created by michael on 1/8/17.
@@ -73,7 +75,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private CardView mContainerCardView;
     private AppCompatEditText mSearchEditText;
     private IconTextView mDoneSearchImageView;
-    private LinearLayout mSpinnerListContainer;
+    private RevealLinearLayout mSpinnerListContainer;
+    private LinearLayout mSpinnerList;
     private PopupWindow mPopupWindow;
     private ListView mSpinnerListView;
     private TextView mEmptyTextView;
@@ -121,31 +124,52 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     }
 
     public SearchableSpinner(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        mContext = context;
+        getAttributeSet(attrs);
+
+        buildView(context);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SearchableSpinner(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mContext = context;
         getAttributeSet(attrs, defStyleAttr, defStyleRes);
 
+        buildView(context);
+    }
+
+    private void buildView(Context context) {
         final LayoutInflater factory = LayoutInflater.from(context);
         factory.inflate(R.layout.view_searchable_spinner, this, true);
 
-        mSpinnerListContainer = (LinearLayout) factory.inflate(R.layout.view_list, this, false);
-        mSpinnerListView = (ListView) mSpinnerListContainer.findViewById(R.id.LstVw_SpinnerListView);
+        mSpinnerListContainer = (RevealLinearLayout) factory.inflate(R.layout.view_list, this, false);
+        mSpinnerList = (LinearLayout) mSpinnerListContainer.findViewById(R.id.LnrLt_SearchList);
+        mSpinnerListView = (ListView) mSpinnerList.findViewById(R.id.LstVw_SpinnerListView);
         if (mListItemDivider != null) {
             mSpinnerListView.setDivider(mListItemDivider);
             mSpinnerListView.setDividerHeight(mListDividerSize);
         }
-        mEmptyTextView = (TextView) mSpinnerListContainer.findViewById(R.id.TxtVw_EmptyText);
+        mEmptyTextView = (TextView) mSpinnerList.findViewById(R.id.TxtVw_EmptyText);
         mSpinnerListView.setEmptyView(mEmptyTextView);
+    }
+
+    private void getAttributeSet(@Nullable AttributeSet attrs) {
+        getAttributeSet(attrs, -1, -1);
     }
 
     private void getAttributeSet(@Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
         if (attrs != null) {
             try {
-                TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SearchableSpinner, defStyleAttr, defStyleRes);
+                TypedArray attributes = null;
+
+                if (Utils.isLollipopOrHigher()) {
+                    attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SearchableSpinner, defStyleAttr, defStyleRes);
+                } else {
+                    attributes = mContext.obtainStyledAttributes(attrs, R.styleable.SearchableSpinner);
+                }
+
                 mRevealViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_RevealViewBackgroundColor, Color.WHITE);
                 mStartEditTintColor = attributes.getColor(R.styleable.SearchableSpinner_StartSearchTintColor, Color.GRAY);
                 mEditViewBackgroundColor = attributes.getColor(R.styleable.SearchableSpinner_SearchViewBackgroundColor, Color.WHITE);
@@ -186,15 +210,20 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         getScreenSize();
         int width = View.MeasureSpec.getSize(widthMeasureSpec);
+
         if (mShowBorders) {     // + 4 because of card layout_margin in the view_searchable_spinner.xml
             width -= UITools.dpToPx(mContext, (mBordersSize + 4));
         } else {
             width -= UITools.dpToPx(mContext, 8);
         }
+
         mPopupWindow.setWidth(width);
         if (mExpandSize <= 0) {
             mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        } else {
+            mPopupWindow.setHeight(heightMeasureSpec);
         }
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -229,7 +258,11 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             }
         });
         mPopupWindow.setFocusable(false);
-        mPopupWindow.setElevation(DefaultElevation);
+
+        if (Utils.isLollipopOrHigher()) {//Todo : add shadow view for lower sdkVersions
+            mPopupWindow.setElevation(DefaultElevation);
+        }
+
         mPopupWindow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.spinner_drawable));
 
         mSpinnerListView.setOnItemClickListener(mOnItemSelectedListener);
@@ -407,7 +440,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
     private void setupList() {
         ViewGroup.MarginLayoutParams spinnerListViewLayoutParams = (ViewGroup.MarginLayoutParams) mSpinnerListView.getLayoutParams();
-        ViewGroup.LayoutParams spinnerListContainerLayoutParams = mSpinnerListContainer.getLayoutParams();
+        ViewGroup.LayoutParams spinnerListContainerLayoutParams = mSpinnerList.getLayoutParams();
         LinearLayout.LayoutParams listLayoutParams = (LinearLayout.LayoutParams) mSpinnerListView.getLayoutParams();
 
         spinnerListContainerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -417,7 +450,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         } else {
             listLayoutParams.height = mExpandSize;
         }
-        mSpinnerListContainer.setBackgroundColor(mBoarderColor);
+        mSpinnerList.setBackgroundColor(mBoarderColor);
         if (mShowBorders && mBordersSize > 0) {
             spinnerListViewLayoutParams.setMargins(mBordersSize, mBordersSize, mBordersSize, mBordersSize);
         } else {
@@ -548,7 +581,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             @Override
             public void onGlobalLayout() {
                 mPopupWindow.getContentView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView(), cxr, cy, reverse_endradius, reverse_startradius);
+                final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView().findViewById(R.id.LnrLt_SearchList), cxr, cy, reverse_endradius, reverse_startradius);
                 spinnerListContainerAnimator.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -643,7 +676,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         revealAnimator.start();
 
         if (mPopupWindow.isShowing()) {
-            final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView(), cxr, cy, reverse_startradius, reverse_endradius);
+            final Animator spinnerListContainerAnimator = ViewAnimationUtils.createCircularReveal(mPopupWindow.getContentView().findViewById(R.id.LnrLt_SearchList), cxr, cy, reverse_startradius, reverse_endradius);
             spinnerListContainerAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {

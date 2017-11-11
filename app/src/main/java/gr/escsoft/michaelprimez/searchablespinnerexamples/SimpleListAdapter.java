@@ -16,9 +16,9 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.ArrayList;
 
-import gr.escsoft.michaelprimez.revealedittext.tools.UITools;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+import gr.escsoft.michaelprimez.searchablespinner.tools.UITools;
 
 /**
  * Created by michael on 1/8/17.

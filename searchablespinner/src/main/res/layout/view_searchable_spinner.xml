@@ -9,7 +9,7 @@
     android:focusableInTouchMode="true"
     android:background="@android:color/transparent">
 
-    <FrameLayout
+    <io.codetail.widget.RevealFrameLayout
         android:id="@+id/FrmLt_EditContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -143,5 +143,5 @@
                 </LinearLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
-    </FrameLayout>
+    </io.codetail.widget.RevealFrameLayout>
 </merge>
