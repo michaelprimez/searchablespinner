@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
             public void spinnerIsOpening() {
                 mSearchableSpinner1.hideEdit();
                 mSearchableSpinner2.hideEdit();
+                mSearchableSpinner3.hideEdit();
+
             }
 
             @Override
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             public void spinnerIsOpening() {
                 mSearchableSpinner.hideEdit();
                 mSearchableSpinner2.hideEdit();
+                mSearchableSpinner3.hideEdit();
+
             }
 
             @Override
@@ -73,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
             public void spinnerIsOpening() {
                 mSearchableSpinner.hideEdit();
                 mSearchableSpinner1.hideEdit();
+                mSearchableSpinner3.hideEdit();
+
             }
 
             @Override
@@ -88,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void spinnerIsOpening() {
                 mSearchableSpinner.hideEdit();
-                mSearchableSpinner3.hideEdit();
+                mSearchableSpinner1.hideEdit();
+                mSearchableSpinner2.hideEdit();
+
             }
 
             @Override
@@ -108,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!mSearchableSpinner2.isInsideSearchEditText(event)) {
             mSearchableSpinner2.hideEdit();
+        }
+        if (!mSearchableSpinner3.isInsideSearchEditText(event)) {
+            mSearchableSpinner3.hideEdit();
         }
         return super.onTouchEvent(event);
     }
@@ -196,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             mSearchableSpinner.setSelectedItem(0);
             mSearchableSpinner1.setSelectedItem(0);
             mSearchableSpinner2.setSelectedItem(0);
+            mSearchableSpinner3.setSelectedItem(0);
             return true;
         }
 
