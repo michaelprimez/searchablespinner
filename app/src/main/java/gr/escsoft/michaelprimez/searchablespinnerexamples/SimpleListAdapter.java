@@ -17,7 +17,6 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import java.util.ArrayList;
 
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
-import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import gr.escsoft.michaelprimez.searchablespinner.tools.UITools;
 
 /**
@@ -31,44 +30,61 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
     private ArrayList<String> mStrings;
     private StringFilter mStringFilter = new StringFilter();
 
+    private boolean showEmptyListItem;
+
     public SimpleListAdapter(Context context, ArrayList<String> strings) {
         mContext = context;
         mStrings = strings;
         mBackupStrings = strings;
+        showEmptyListItem = true;
+    }
+
+    private int getPositionInDataArray(int position) {
+        return position - (showEmptyListItem ? 1 : 0);
     }
 
     @Override
     public int getCount() {
-        return mStrings == null ? 0 : mStrings.size() + 1;
+        return mStrings == null ? 0 : mStrings.size() + (showEmptyListItem ? 1 : 0);
     }
 
     @Override
     public Object getItem(int position) {
-        if (mStrings != null && position > 0)
-            return mStrings.get(position - 1);
-        else
+        if (mStrings == null) {
             return null;
+        }
+
+        if (showEmptyListItem && position == 0) {
+            return null;
+        } else {
+            return mStrings.get(getPositionInDataArray(position));
+        }
     }
 
     @Override
     public long getItemId(int position) {
-        if (mStrings == null && position > 0)
-            return mStrings.get(position).hashCode();
-        else
+        if (mStrings == null) {
             return -1;
+        }
+
+        if (showEmptyListItem && position == 0) {
+            return -1;
+        } else {
+            return mStrings.get(getPositionInDataArray(position)).hashCode();
+        }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = null;
-        if (position == 0) {
+        if (showEmptyListItem && position == 0) {
             view = getNoSelectionView();
         } else {
             view = View.inflate(mContext, R.layout.view_list_item, null);
             ImageView letters = (ImageView) view.findViewById(R.id.ImgVw_Letters);
-            TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
-            letters.setImageDrawable(getTextDrawable(mStrings.get(position-1)));
-            dispalyName.setText(mStrings.get(position-1));
+            TextView displayName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
+            letters.setImageDrawable(getTextDrawable(mStrings.get(getPositionInDataArray(position))));
+            displayName.setText(mStrings.get(getPositionInDataArray(position)));
         }
         return view;
     }
@@ -76,14 +92,14 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
     @Override
     public View getSelectedView(int position) {
         View view = null;
-        if (position == 0) {
+        if (showEmptyListItem && position == 0) {
             view = getNoSelectionView();
         } else {
             view = View.inflate(mContext, R.layout.view_list_item, null);
             ImageView letters = (ImageView) view.findViewById(R.id.ImgVw_Letters);
-            TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
-            letters.setImageDrawable(getTextDrawable(mStrings.get(position-1)));
-            dispalyName.setText(mStrings.get(position-1));
+            TextView displayName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
+            letters.setImageDrawable(getTextDrawable(mStrings.get(getPositionInDataArray(position))));
+            displayName.setText(mStrings.get(getPositionInDataArray(position)));
         }
         return view;
     }
@@ -92,6 +108,10 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
     public View getNoSelectionView() {
         View view = View.inflate(mContext, R.layout.view_list_no_selection_item, null);
         return view;
+    }
+
+    public void setShowEmptyListItem(boolean showEmptyListItem) {
+        this.showEmptyListItem = showEmptyListItem;
     }
 
     private TextDrawable getTextDrawable(String displayName) {
