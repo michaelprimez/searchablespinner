@@ -194,6 +194,8 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         mPopupWindow.setWidth(width);
         if (mExpandSize <= 0) {
             mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        } else{
+            mPopupWindow.setHeight(heightMeasureSpec);
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
