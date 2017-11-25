@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private SearchableSpinner mSearchableSpinner2;
     private SearchableSpinner mSearchableSpinner3;
     private SimpleListAdapter mSimpleListAdapter;
+    private SimpleArrayListAdapter mSimpleArrayListAdapter;
     private final ArrayList<String> mStrings = new ArrayList<>();
 
     @Override
@@ -33,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
         initListValues();
         mSimpleListAdapter = new SimpleListAdapter(this, mStrings);
+        mSimpleArrayListAdapter = new SimpleArrayListAdapter(this, mStrings);
+
         mSearchableSpinner = (SearchableSpinner) findViewById(R.id.SearchableSpinner);
-        mSearchableSpinner.setAdapter(mSimpleListAdapter);
+        mSearchableSpinner.setAdapter(mSimpleArrayListAdapter);
         mSearchableSpinner.setOnItemSelectedListener(mOnItemSelectedListener);
         mSearchableSpinner.setStatusListener(new IStatusListener() {
             @Override
