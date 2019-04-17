@@ -14,6 +14,7 @@
         <attr name="SpinnerExpandHeight" format="dimension"/>
         <attr name="KeepLastSearch" format="boolean"/>
         <attr name="RevealEmptyText" format="string"/>
+        <attr name="RevealEmptyTextSize" format="dimension"/>
         <attr name="SearchHintText" format="string"/>
         <attr name="NoItemsFoundText" format="string"/>
         <attr name="ItemsDivider" format="reference"/>

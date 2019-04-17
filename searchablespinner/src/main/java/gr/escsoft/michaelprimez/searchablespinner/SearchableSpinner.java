@@ -85,19 +85,30 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     private int mScreenWidthPixels;
 
     /* Attributes */
-    private @ColorInt int mRevealViewBackgroundColor;
-    private @ColorInt int mStartEditTintColor;
-    private @ColorInt int mEditViewBackgroundColor;
-    private @ColorInt int mEditViewTextColor;
-    private @ColorInt int mDoneEditTintColor;
-    private @ColorInt int mBoarderColor;
+    private @ColorInt
+    int mRevealViewBackgroundColor;
+    private @ColorInt
+    int mStartEditTintColor;
+    private @ColorInt
+    int mEditViewBackgroundColor;
+    private @ColorInt
+    int mEditViewTextColor;
+    private @ColorInt
+    int mDoneEditTintColor;
+    private @ColorInt
+    int mBoarderColor;
     private Drawable mListItemDivider;
-    private @Px int mBordersSize;
-    private @Px int mExpandSize;
-    private @Px int mListDividerSize;
+    private @Px
+    int mBordersSize;
+    private @Px
+    int mExpandSize;
+    private @Px
+    int mListDividerSize;
     private boolean mShowBorders;
     private boolean mKeepLastSearch;
     private String mRevealEmptyText;
+    private @Px
+    int mRevealEmptyTextSize;
     private String mSearchHintText;
     private String mNoItemsFoundText;
     private int mAnimDuration;
@@ -158,6 +169,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
                 mAnimDuration = attributes.getColor(R.styleable.SearchableSpinner_AnimDuration, DefaultAnimationDuration);
                 mKeepLastSearch = attributes.getBoolean(R.styleable.SearchableSpinner_KeepLastSearch, false);
                 mRevealEmptyText = attributes.getString(R.styleable.SearchableSpinner_RevealEmptyText);
+                mRevealEmptyTextSize = attributes.getDimensionPixelSize(R.styleable.SearchableSpinner_RevealEmptyTextSize, 10);
                 mSearchHintText = attributes.getString(R.styleable.SearchableSpinner_SearchHintText);
                 mNoItemsFoundText = attributes.getString(R.styleable.SearchableSpinner_NoItemsFoundText);
                 mListItemDivider = attributes.getDrawable(R.styleable.SearchableSpinner_ItemsDivider);
@@ -194,7 +206,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         mPopupWindow.setWidth(width);
         if (mExpandSize <= 0) {
             mPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        } else{
+        } else {
             mPopupWindow.setHeight(heightMeasureSpec);
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -245,6 +257,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             if (mCurrSelectedView == null && !TextUtils.isEmpty(mRevealEmptyText)) {
                 TextView textView = new TextView(mContext);
                 textView.setText(mRevealEmptyText);
+                textView.setTextSize(mRevealEmptyTextSize);
                 mCurrSelectedView = new SelectedView(textView, -1, 0);
                 mRevealItem.addView(textView);
             }
@@ -316,6 +329,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         } else {
             TextView textView = new TextView(mContext);
             textView.setText(mRevealEmptyText);
+            textView.setTextSize(mRevealEmptyTextSize);
             mCurrSelectedView = new SelectedView(textView, -1, 0);
             mRevealItem.addView(textView);
         }
@@ -381,7 +395,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Filterable filterable =  (Filterable) mSpinnerListView.getAdapter();
+            Filterable filterable = (Filterable) mSpinnerListView.getAdapter();
             if (filterable != null)
                 filterable.getFilter().filter(s);
         }
@@ -482,7 +496,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             mStatusListener.spinnerIsOpening();
         final int cx = mRevealContainerCardView.getLeft();
         final int cxr = mRevealContainerCardView.getRight();
-        final int cy = (mRevealContainerCardView.getTop() + mRevealContainerCardView.getHeight())/2;
+        final int cy = (mRevealContainerCardView.getTop() + mRevealContainerCardView.getHeight()) / 2;
         final int reverse_startradius = Math.max(mRevealContainerCardView.getWidth(), mRevealContainerCardView.getHeight());
         final int reverse_endradius = 0;
 
@@ -585,7 +599,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             mStatusListener.spinnerIsClosing();
         final int cx = mContainerCardView.getLeft();
         final int cxr = mContainerCardView.getRight();
-        final int cy = (mContainerCardView.getTop() + mContainerCardView.getHeight())/2;
+        final int cy = (mContainerCardView.getTop() + mContainerCardView.getHeight()) / 2;
         final int reverse_startradius = Math.max(mContainerCardView.getWidth(), mContainerCardView.getHeight());
         final int reverse_endradius = 0;
 
@@ -676,7 +690,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     public boolean isInsideSearchEditText(MotionEvent event) {
         Rect editTextRect = new Rect();
         mSearchEditText.getHitRect(editTextRect);
-        if (!editTextRect.contains((int)event.getX(), (int)event.getY())) {
+        if (!editTextRect.contains((int) event.getX(), (int) event.getY())) {
             return false;
         }
         return true;
@@ -703,6 +717,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
         ss.mShowBorders = mShowBorders;
         ss.mKeepLastSearch = mKeepLastSearch;
         ss.mRevealEmptyText = mRevealEmptyText;
+        ss.mRevealEmptyTextSize = mRevealEmptyTextSize;
         ss.mSearchHintText = mSearchHintText;
         ss.mNoItemsFoundText = mNoItemsFoundText;
         ss.mSelectedViewPosition = mCurrSelectedView != null ? mCurrSelectedView.getPosition() : -1;
@@ -740,17 +755,27 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
     static class SavedState extends BaseSavedState {
         ViewState mViewState;
         int mAnimDuration;
-        @Px int mBordersSize;
-        @Px int mExpandSize;
-        @ColorInt int mBoarderColor;
-        @ColorInt int mRevealViewBackgroundColor;
-        @ColorInt int mStartEditTintColor;
-        @ColorInt int mEditViewBackgroundColor;
-        @ColorInt int mEditViewTextColor;
-        @ColorInt int mDoneEditTintColor;
+        @Px
+        int mBordersSize;
+        @Px
+        int mExpandSize;
+        @ColorInt
+        int mBoarderColor;
+        @ColorInt
+        int mRevealViewBackgroundColor;
+        @ColorInt
+        int mStartEditTintColor;
+        @ColorInt
+        int mEditViewBackgroundColor;
+        @ColorInt
+        int mEditViewTextColor;
+        @ColorInt
+        int mDoneEditTintColor;
         boolean mShowBorders;
         boolean mKeepLastSearch;
         String mRevealEmptyText;
+        @Px
+        int mRevealEmptyTextSize;
         String mSearchHintText;
         String mNoItemsFoundText;
         int mSelectedViewPosition;
@@ -774,6 +799,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             mShowBorders = in.readInt() > 0 ? true : false;
             mKeepLastSearch = in.readInt() > 0 ? true : false;
             mRevealEmptyText = in.readString();
+            mRevealEmptyTextSize = in.readInt();
             mSearchHintText = in.readString();
             mNoItemsFoundText = in.readString();
             mSelectedViewPosition = in.readInt();
@@ -795,6 +821,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             out.writeInt(mShowBorders ? 1 : 0);
             out.writeInt(mKeepLastSearch ? 1 : 0);
             out.writeString(mRevealEmptyText);
+            out.writeInt(mRevealEmptyTextSize);
             out.writeString(mSearchHintText);
             out.writeString(mNoItemsFoundText);
             out.writeInt(mSelectedViewPosition);
@@ -804,6 +831,7 @@ public class SearchableSpinner extends RelativeLayout implements View.OnClickLis
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
+
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
