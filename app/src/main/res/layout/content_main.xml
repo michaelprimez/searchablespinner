@@ -25,6 +25,7 @@
         app:ShowBorders="true"
         app:BordersSize="1dp"
         app:RevealEmptyText="Touch to select"
+        app:RevealEmptyTextSize="5sp"
         app:BoarderColor="@color/colorPrimary"
         app:SpinnerExpandHeight="250dp"/>
 
